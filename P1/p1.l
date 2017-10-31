@@ -5,6 +5,8 @@ unsigned upperWord = 0, lowerWord = 0, phraseCount =0;
 word [^ \t\n]+
 upper [A-ZÑ]+
 lower [a-zñ]+
+delim [ \t\n]
+ws {delim}+
 %%
 {upper}"." {upperWord++; wordCount++; charCount+=yyleng; phraseCount++;}
 {lower}"." {lowerWord++; wordCount++; charCount+=yyleng; phraseCount++;}
@@ -12,6 +14,7 @@ lower [a-zñ]+
 {lower} {lowerWord++; wordCount++; charCount+=yyleng;}
 {word}"."  {wordCount++; charCount+=yyleng; phraseCount++;}
 {word}  {wordCount++; charCount+=yyleng;}
+{ws} {}
 
 
 %%

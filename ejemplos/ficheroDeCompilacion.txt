@@ -5,3 +5,5 @@ gcc -o unejemplo lex.yy.c -lfl
 Si a una regla tipo esta:
 [A-Z], no le añadimos el +, estamos diciendo
 que aceptamos una palabra dentro de este rango.
+
+yyleng -> longitud de cadena de entrada
