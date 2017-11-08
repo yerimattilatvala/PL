@@ -1,24 +1,21 @@
 %{
-unsigned dniCount = 0, jlCount = 1, c=0, asignature = 0;
-unsigned name = 0, subname = 0;
+#include <stdlib.h>
+#include "practica2.tab.h"
+unsigned numLinea = 0;
 %}
-nif [0-9]{8}"-"[A-ZÑ]
-data [0-9]{4}"/"[0-9]{4}
+nif [0-9]{8}"-"[A-Z]{1} 
+data [0-9]{4}"/"[0-9]{4} 
 delim [ \t]
 ws {delim}*
 word [A-ZÑa-zñ]+{ws}
+nota [0-9]+"."[0-9]+
 %%
-Curso{ws}{data} {c++;}
-{nif} {dniCount++;}
-{word}\n {name++;jlCount;;}
-{word}+"-" {asignature++;}
-{word}+"," {subname++;jlCount;;}
-\n {jlCount++;}
-{ws}
+{nota} {yylval.valFloat = atof(yytext); return NOTA;}
+Curso{ws}{data} {yylval.valStr = yytext; return CURSO;}
+{nif} {yylval.valStr = yytext; return NIF;}
+{word}+"-" {yylval.valStr = yytext; return ASIGNATURA;}
+{word}+","{word}+ {yylval.valStr = yytext; return NOMBRE_COMPLETO;}
+\n {}
+{ws} {}
 %%
-int main()
-{
-    yylex();
-    printf("%d,%d,%d,%d,%d,%d\n",dniCount,jlCount,c,asignature,name,subname);
-    return 0;
-}
+

@@ -1,10 +1,18 @@
 FUENTE = practica2
+PRUEBA = file.txt
 
 all: compile run
 
-compile: 
+compile:
 	flex $(FUENTE).l
-	gcc -o $(FUENTE) lex.yy.c -lfl
+	bison -o $(FUENTE).tab.c $(FUENTE).y -yd
+	gcc -o $(FUENTE) lex.yy.c $(FUENTE).tab.c -lfl -ly
 
 run:
-	./$(FUENTE) 
+	./$(FUENTE) < $(PRUEBA)
+
+run2:
+	./$(FUENTE) $(PRUEBA)
+
+clean:
+	rm $(FUENTE) lex.yy.c $(FUENTE).tab.c $(FUENTE).tab.h
