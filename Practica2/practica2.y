@@ -23,14 +23,16 @@ S : fichero {printList();}
 fichero : cabecera lista_alumnos
 	;
 cabecera : ASIGNATURA CURSO {printf("- Asignatura : %s \n",$1);
-							 printf("- %s \n",$2);}
+							printf("%s \n",$2);
+							} 			 
 	;
 lista_alumnos : lista_alumnos alumno
 	| alumno
 	;
-alumno : NIF NOTA{
+alumno : NIF NOMBRE_COMPLETO NOTA{
 		printf("%s; ",$1);
-		printf("%f; ",$2);
+		printf("%s; ",$2);
+		printf("%f; ",$3);
 		}
 	;
 %%

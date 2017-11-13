@@ -11,11 +11,12 @@ word [A-ZÑa-zñ]+{ws}
 nota [0-9]+"."[0-9]+
 %%
 {nota} {yylval.valFloat = atof(yytext); return NOTA;}
-Curso{ws}{data} {yylval.valStr = yytext; return CURSO;}
-{nif} {yylval.valStr = yytext; return NIF;}
-{word}+"-" {yylval.valStr = yytext; return ASIGNATURA;}
-{word}+","{word}+ {yylval.valStr = yytext; return NOMBRE_COMPLETO;}
+"-"{ws}Curso{ws}{data} {yylval.valStr = yytext; return CURSO;}
+{nif} {yylval.valStr = strdup(yytext); return NIF;}
+{word}+\n {}
+{word}+ {yylval.valStr = strdup(yytext); return ASIGNATURA;}
+{word}+","{ws}{word} {yylval.valStr = strdup(yytext); return NOMBRE_COMPLETO;}
+
 \n {}
-{ws} {}
 %%
 
