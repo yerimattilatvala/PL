@@ -1,9 +1,25 @@
 %{
 #include <stdio.h>
-//función para imprimir listas
-void printList ();
+#include <string.h>
 void yyerror (char const *);
 int yylex();
+char str2[128]; // para copiar la asignatura sin el guion
+int linea = 1;
+struct alumno
+{
+	int lineaAlumno;
+	char *nif;
+	char *nombre;
+	float nota;
+};
+int posAprobado = 0;
+int posSuspenso = 0;
+struct alumno aprobados[128];
+struct alumno suspensos[128];
+struct alumno crearAlumno(int linea, char *nif, char *nombre, float nota);
+void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion);
+//función para imprimir listas
+void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos);
 %}
 %union{
     float valFloat;
@@ -14,25 +30,42 @@ int yylex();
 %token <valInt> LINEA
 %token <valStr> NOMBRE_COMPLETO NIF
 %token <valStr> ASIGNATURA CURSO
+%token <valStr> CAMPOS
 %type <valStr>  fichero cabecera lista_alumnos alumno 
 %error-verbose
 %start S
 %%
-S : fichero {printList();}
+S : fichero {printList(aprobados,suspensos);}
 	;
-fichero : cabecera lista_alumnos
+fichero : cabecera identificadores lista_alumnos
 	;
-cabecera : ASIGNATURA CURSO {printf("- Asignatura : %s \n",$1);
-							printf("%s \n",$2);
+cabecera : ASIGNATURA CURSO {strncpy(str2,$1,(strlen($1)-1));
+							printf("- Asignatura : %s\n",str2);
+							printf("- %s \n",$2);
+							linea++;
 							} 			 
+	;
+identificadores : CAMPOS	{
+							linea++;
+							}
 	;
 lista_alumnos : lista_alumnos alumno
 	| alumno
 	;
 alumno : NIF NOMBRE_COMPLETO NOTA{
-		printf("%s; ",$1);
+		/*printf("%s; ",$1);
 		printf("%s; ",$2);
-		printf("%f; ",$3);
+		printf("%.2f; ",$3);*/
+		struct alumno alumno = crearAlumno(linea,$1,$2,$3);
+		if ($3 >= 5) {
+			insertarAlumno(alumno,aprobados,posAprobado);
+			posAprobado++;
+		}else {
+			insertarAlumno(alumno,suspensos,posSuspenso);
+			posSuspenso++;
+			
+		}
+		linea++;
 		}
 	;
 %%
@@ -57,5 +90,29 @@ extern FILE *yyin;
 	return 0;
 }
 void yyerror (char const *message) { fprintf (stderr, "%s\n", message);}
-void printList () {printf("AQUI LISTAS \n");}
+
+struct alumno crearAlumno(int linea,char *nif, char *nombre, float nota) {
+	struct alumno a;
+	a.lineaAlumno = linea;
+	a.nif = nif;
+	a.nombre = nombre;
+	a.nota = nota;
+	return a;
+}
+
+void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion) {
+	lista[posicion] = alumno;
+}
+
+void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos) {
+	int i = 0;
+	printf("+ Alumnos aprobados: \n");
+	for(i = 0; i < posAprobado; i++){
+		printf("Linea %d: %s; %s; %.2f\n",listaAprobados[i].lineaAlumno,listaAprobados[i].nif,listaAprobados[i].nombre,listaAprobados[i].nota);
+	}
+	printf("+ Alumnos suspensos: \n");
+	for(i = 0; i < posSuspenso; i++){
+		printf("Linea %d: %s; %s; %.2f\n",listaSuspensos[i].lineaAlumno,listaSuspensos[i].nif,listaSuspensos[i].nombre,listaSuspensos[i].nota);
+	}
+}
 
