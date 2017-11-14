@@ -66,9 +66,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 void yyerror (char const *);
 int yylex();
 char str2[128]; // para copiar la asignatura sin el guion
+char str3[10]; // para chequear el dni
 int linea = 1;
 struct alumno
 {
@@ -83,10 +85,18 @@ struct alumno aprobados[128];
 struct alumno suspensos[128];
 struct alumno crearAlumno(int linea, char *nif, char *nombre, float nota);
 void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion);
+struct error{
+	int lineaError;
+	char *error;
+};
+int posError = 0;
+struct error errores[128];
+struct error crearError(int linea,char*error);
+void insertarError(struct error e,struct error *listaError,int posicion);
 //función para imprimir listas
-void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos);
+void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, struct error *errores);
 
-#line 90 "practica2.tab.c" /* yacc.c:339  */
+#line 100 "practica2.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -144,13 +154,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 24 "practica2.y" /* yacc.c:355  */
+#line 34 "practica2.y" /* yacc.c:355  */
 
     float valFloat;
     int valInt;
     char * valStr;
 
-#line 154 "practica2.tab.c" /* yacc.c:355  */
+#line 164 "practica2.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -167,7 +177,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 171 "practica2.tab.c" /* yacc.c:358  */
+#line 181 "practica2.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -465,7 +475,7 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38,    40,    42,    48,    52,    53,    55
+       0,    48,    48,    50,    52,    58,    62,    63,    65
 };
 #endif
 
@@ -1235,51 +1245,60 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 38 "practica2.y" /* yacc.c:1646  */
-    {printList(aprobados,suspensos);}
-#line 1241 "practica2.tab.c" /* yacc.c:1646  */
+#line 48 "practica2.y" /* yacc.c:1646  */
+    {printList(aprobados,suspensos,errores);}
+#line 1251 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 42 "practica2.y" /* yacc.c:1646  */
+#line 52 "practica2.y" /* yacc.c:1646  */
     {strncpy(str2,(yyvsp[-1].valStr),(strlen((yyvsp[-1].valStr))-1));
 							printf("- Asignatura : %s\n",str2);
 							printf("- %s \n",(yyvsp[0].valStr));
 							linea++;
 							}
-#line 1251 "practica2.tab.c" /* yacc.c:1646  */
+#line 1261 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 48 "practica2.y" /* yacc.c:1646  */
+#line 58 "practica2.y" /* yacc.c:1646  */
     {
 							linea++;
 							}
-#line 1259 "practica2.tab.c" /* yacc.c:1646  */
+#line 1269 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 55 "practica2.y" /* yacc.c:1646  */
+#line 65 "practica2.y" /* yacc.c:1646  */
     {
-		/*printf("%s; ",$1);
-		printf("%s; ",$2);
-		printf("%.2f; ",$3);*/
-		struct alumno alumno = crearAlumno(linea,(yyvsp[-2].valStr),(yyvsp[-1].valStr),(yyvsp[0].valFloat));
-		if ((yyvsp[0].valFloat) >= 5) {
-			insertarAlumno(alumno,aprobados,posAprobado);
-			posAprobado++;
-		}else {
-			insertarAlumno(alumno,suspensos,posSuspenso);
-			posSuspenso++;
-			
+		strncpy(str3,(yyvsp[-2].valStr),(strlen((yyvsp[-2].valStr))-2));
+		printf("%s \n",str3);
+		if (isdigit(*str3)){
+			struct alumno alumno = crearAlumno(linea,(yyvsp[-2].valStr),(yyvsp[-1].valStr),(yyvsp[0].valFloat));
+			if ((yyvsp[0].valFloat) >= 5 && (yyvsp[0].valFloat) <= 10) {
+				insertarAlumno(alumno,aprobados,posAprobado);
+				posAprobado++;
+			}else if ((yyvsp[0].valFloat) >= 0 && (yyvsp[0].valFloat) < 5){
+				insertarAlumno(alumno,suspensos,posSuspenso);
+				posSuspenso++;
+				
+			} else{
+				struct error e = crearError(linea,"Nota Incorrecta");
+				insertarError(e,errores,posError);
+				posError++;
+			}
+		} else{
+				struct error e = crearError(linea,"NIF Incorrecto");
+				insertarError(e,errores,posError);
+				posError++;
 		}
 		linea++;
 		}
-#line 1279 "practica2.tab.c" /* yacc.c:1646  */
+#line 1298 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1283 "practica2.tab.c" /* yacc.c:1646  */
+#line 1302 "practica2.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1507,7 +1526,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 71 "practica2.y" /* yacc.c:1906  */
+#line 90 "practica2.y" /* yacc.c:1906  */
 
 int main(int argc, char *argv[]) {
 extern FILE *yyin;
@@ -1544,7 +1563,11 @@ void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion) {
 	lista[posicion] = alumno;
 }
 
-void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos) {
+void insertarError(struct error e,struct error *listaError,int posicion) {
+	listaError[posicion] = e;
+}
+
+void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, struct error *errores) {
 	int i = 0;
 	printf("+ Alumnos aprobados: \n");
 	for(i = 0; i < posAprobado; i++){
@@ -1554,5 +1577,15 @@ void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos) {
 	for(i = 0; i < posSuspenso; i++){
 		printf("Linea %d: %s; %s; %.2f\n",listaSuspensos[i].lineaAlumno,listaSuspensos[i].nif,listaSuspensos[i].nombre,listaSuspensos[i].nota);
 	}
+	printf("+ Errores: \n");
+	for(i = 0; i < posError; i++){
+		printf("Linea %d: %s\n",errores[i].lineaError,errores[i].error);
+	}
 }
 
+struct error crearError(int linea,char*error) {
+	struct error e;
+	e.lineaError = linea;
+	e.error = error;
+	return e;
+}

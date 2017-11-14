@@ -1,9 +1,11 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 void yyerror (char const *);
 int yylex();
 char str2[128]; // para copiar la asignatura sin el guion
+char str3[10]; // para chequear el dni
 int linea = 1;
 struct alumno
 {
@@ -18,8 +20,16 @@ struct alumno aprobados[128];
 struct alumno suspensos[128];
 struct alumno crearAlumno(int linea, char *nif, char *nombre, float nota);
 void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion);
+struct error{
+	int lineaError;
+	char *error;
+};
+int posError = 0;
+struct error errores[128];
+struct error crearError(int linea,char*error);
+void insertarError(struct error e,struct error *listaError,int posicion);
 //función para imprimir listas
-void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos);
+void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, struct error *errores);
 %}
 %union{
     float valFloat;
@@ -35,7 +45,7 @@ void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos);
 %error-verbose
 %start S
 %%
-S : fichero {printList(aprobados,suspensos);}
+S : fichero {printList(aprobados,suspensos,errores);}
 	;
 fichero : cabecera identificadores lista_alumnos
 	;
@@ -53,17 +63,25 @@ lista_alumnos : lista_alumnos alumno
 	| alumno
 	;
 alumno : NIF NOMBRE_COMPLETO NOTA{
-		/*printf("%s; ",$1);
-		printf("%s; ",$2);
-		printf("%.2f; ",$3);*/
-		struct alumno alumno = crearAlumno(linea,$1,$2,$3);
-		if ($3 >= 5) {
-			insertarAlumno(alumno,aprobados,posAprobado);
-			posAprobado++;
-		}else {
-			insertarAlumno(alumno,suspensos,posSuspenso);
-			posSuspenso++;
-			
+		strncpy(str3,$1,(strlen($1)-2));
+		if (isdigit(*str3)){
+			struct alumno alumno = crearAlumno(linea,$1,$2,$3);
+			if ($3 >= 5 && $3 <= 10) {
+				insertarAlumno(alumno,aprobados,posAprobado);
+				posAprobado++;
+			}else if ($3 >= 0 && $3 < 5){
+				insertarAlumno(alumno,suspensos,posSuspenso);
+				posSuspenso++;
+				
+			} else{
+				struct error e = crearError(linea,"Nota Incorrecta");
+				insertarError(e,errores,posError);
+				posError++;
+			}
+		} else{
+				struct error e = crearError(linea,"NIF Incorrecto");
+				insertarError(e,errores,posError);
+				posError++;
 		}
 		linea++;
 		}
@@ -104,7 +122,11 @@ void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion) {
 	lista[posicion] = alumno;
 }
 
-void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos) {
+void insertarError(struct error e,struct error *listaError,int posicion) {
+	listaError[posicion] = e;
+}
+
+void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, struct error *errores) {
 	int i = 0;
 	printf("+ Alumnos aprobados: \n");
 	for(i = 0; i < posAprobado; i++){
@@ -114,5 +136,15 @@ void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos) {
 	for(i = 0; i < posSuspenso; i++){
 		printf("Linea %d: %s; %s; %.2f\n",listaSuspensos[i].lineaAlumno,listaSuspensos[i].nif,listaSuspensos[i].nombre,listaSuspensos[i].nota);
 	}
+	printf("+ Errores: \n");
+	for(i = 0; i < posError; i++){
+		printf("Linea %d: %s\n",errores[i].lineaError,errores[i].error);
+	}
 }
 
+struct error crearError(int linea,char*error) {
+	struct error e;
+	e.lineaError = linea;
+	e.error = error;
+	return e;
+}
