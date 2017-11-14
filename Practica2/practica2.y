@@ -4,9 +4,7 @@
 #include <ctype.h>
 void yyerror (char const *);
 int yylex();
-char str2[128]; // para copiar la asignatura sin el guion
-char str3[10]; // para chequear el dni
-int linea = 1;
+extern int yylineno;
 struct alumno
 {
 	int lineaAlumno;
@@ -40,52 +38,46 @@ void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, str
 %token <valInt> LINEA
 %token <valStr> NOMBRE_COMPLETO NIF
 %token <valStr> ASIGNATURA CURSO
-%token <valStr> CAMPOS
 %type <valStr>  fichero cabecera lista_alumnos alumno 
 %error-verbose
 %start S
 %%
 S : fichero {printList(aprobados,suspensos,errores);}
 	;
-fichero : cabecera identificadores lista_alumnos
+fichero : cabecera  lista_alumnos
 	;
-cabecera : ASIGNATURA CURSO {strncpy(str2,$1,(strlen($1)-1));
-							printf("- Asignatura : %s\n",str2);
+cabecera : ASIGNATURA CURSO {
+							printf("- Asignatura : %s\n",$1);
 							printf("- %s \n",$2);
-							linea++;
 							} 			 
-	;
-identificadores : CAMPOS	{
-							linea++;
-							}
 	;
 lista_alumnos : lista_alumnos alumno
 	| alumno
 	;
 alumno : NIF NOMBRE_COMPLETO NOTA{
-		strncpy(str3,$1,(strlen($1)-2));
-		char *endptr;
-		strtol(str3, &endptr, 10);
-		if (*endptr == '\0'){
-			struct alumno alumno = crearAlumno(linea,$1,$2,$3);
-			if ($3 >= 5 && $3 <= 10) {
-				insertarAlumno(alumno,aprobados,posAprobado);
-				posAprobado++;
-			}else if ($3 >= 0 && $3 < 5){
-				insertarAlumno(alumno,suspensos,posSuspenso);
-				posSuspenso++;
-				
-			} else{
-				struct error e = crearError(linea,"Nota Incorrecta");
-				insertarError(e,errores,posError);
-				posError++;
-			}
-		} else{
-				struct error e = crearError(linea,"NIF Incorrecto");
-				insertarError(e,errores,posError);
-				posError++;
+				struct alumno alumno = crearAlumno(yylineno,$1,$2,$3);
+				if ($3 >= 5 && $3 <= 10) {
+					insertarAlumno(alumno,aprobados,posAprobado);
+					posAprobado++;
+				}else if ($3 >= 0 && $3 < 5){
+					insertarAlumno(alumno,suspensos,posSuspenso);
+					posSuspenso++;
+					
+				} else{
+					struct error e = crearError(yylineno,"Nota Incorrecta");
+					insertarError(e,errores,posError);
+					posError++;
+				}
+				}
+		| ASIGNATURA NOMBRE_COMPLETO NOTA {
+			struct error e = crearError(yylineno,"NIF Incorrecto");
+			insertarError(e,errores,posError);
+			posError++;
 		}
-		linea++;
+		| NOMBRE_COMPLETO NOTA {
+			struct error e = crearError(yylineno,"NIF Incorrecto");
+			insertarError(e,errores,posError);
+			posError++;
 		}
 	;
 %%

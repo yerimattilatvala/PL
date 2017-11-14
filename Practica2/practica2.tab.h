@@ -50,8 +50,7 @@ extern int yydebug;
     NOMBRE_COMPLETO = 260,
     NIF = 261,
     ASIGNATURA = 262,
-    CURSO = 263,
-    CAMPOS = 264
+    CURSO = 263
   };
 #endif
 /* Tokens.  */
@@ -61,20 +60,19 @@ extern int yydebug;
 #define NIF 261
 #define ASIGNATURA 262
 #define CURSO 263
-#define CAMPOS 264
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 34 "practica2.y" /* yacc.c:1909  */
+#line 32 "practica2.y" /* yacc.c:1909  */
 
     float valFloat;
     int valInt;
     char * valStr;
 
-#line 78 "practica2.tab.h" /* yacc.c:1909  */
+#line 76 "practica2.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
