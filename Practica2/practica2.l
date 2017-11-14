@@ -11,7 +11,7 @@ nota "-"?[0-9]+"."[0-9]+
 nif [^ \t\n]{8}"-"[A-Z]{1} 
 %%
 {nota} {yylval.valFloat = atof(yytext); return NOTA;}
-Curso{ws}{data}{ws} {yylval.valStr = yytext; return CURSO;}
+Curso{ws}{data} {yylval.valStr = yytext; return CURSO;}
 {nif} {yylval.valStr = strdup(yytext); return NIF;}
 {word}+ { return CAMPOS;}
 {word}+"-" {yylval.valStr = strdup(yytext); return ASIGNATURA;}

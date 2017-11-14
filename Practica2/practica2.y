@@ -64,7 +64,9 @@ lista_alumnos : lista_alumnos alumno
 	;
 alumno : NIF NOMBRE_COMPLETO NOTA{
 		strncpy(str3,$1,(strlen($1)-2));
-		if (isdigit(*str3)){
+		char *endptr;
+		strtol(str3, &endptr, 10);
+		if (*endptr == '\0'){
 			struct alumno alumno = crearAlumno(linea,$1,$2,$3);
 			if ($3 >= 5 && $3 <= 10) {
 				insertarAlumno(alumno,aprobados,posAprobado);

@@ -1272,8 +1272,9 @@ yyreduce:
 #line 65 "practica2.y" /* yacc.c:1646  */
     {
 		strncpy(str3,(yyvsp[-2].valStr),(strlen((yyvsp[-2].valStr))-2));
-		printf("%s \n",str3);
-		if (isdigit(*str3)){
+		char *endptr;
+		strtol(str3, &endptr, 10);
+		if (*endptr == '\0'){
 			struct alumno alumno = crearAlumno(linea,(yyvsp[-2].valStr),(yyvsp[-1].valStr),(yyvsp[0].valFloat));
 			if ((yyvsp[0].valFloat) >= 5 && (yyvsp[0].valFloat) <= 10) {
 				insertarAlumno(alumno,aprobados,posAprobado);
@@ -1294,11 +1295,11 @@ yyreduce:
 		}
 		linea++;
 		}
-#line 1298 "practica2.tab.c" /* yacc.c:1646  */
+#line 1299 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1302 "practica2.tab.c" /* yacc.c:1646  */
+#line 1303 "practica2.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1526,7 +1527,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 90 "practica2.y" /* yacc.c:1906  */
+#line 91 "practica2.y" /* yacc.c:1906  */
 
 int main(int argc, char *argv[]) {
 extern FILE *yyin;
