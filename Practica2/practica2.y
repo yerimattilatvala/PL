@@ -48,7 +48,7 @@ fichero : cabecera  lista_alumnos
 	;
 cabecera : ASIGNATURA CURSO {
 							printf("- Asignatura : %s\n",$1);
-							printf("- %s \n",$2);
+							printf("- Curso %s \n",$2);
 							} 			 
 	;
 lista_alumnos : lista_alumnos alumno
@@ -69,16 +69,22 @@ alumno : NIF NOMBRE_COMPLETO NOTA{
 					posError++;
 				}
 				}
-		| ASIGNATURA NOMBRE_COMPLETO NOTA {
+		| error NOMBRE_COMPLETO NOTA {
 			struct error e = crearError(yylineno,"NIF Incorrecto");
 			insertarError(e,errores,posError);
 			posError++;
 		}
-		| NOMBRE_COMPLETO NOTA {
-			struct error e = crearError(yylineno,"NIF Incorrecto");
+		| NIF error NOTA {
+			struct error e = crearError(yylineno,"Nombre Incorrecto");
 			insertarError(e,errores,posError);
 			posError++;
 		}
+		| NIF NOMBRE_COMPLETO error {
+			struct error e = crearError(yylineno,"Nota Incorrecta");
+			insertarError(e,errores,posError);
+			posError++;
+		}
+		
 	;
 %%
 int main(int argc, char *argv[]) {
@@ -95,13 +101,14 @@ extern FILE *yyin;
 			else {
 				yyparse();
 				fclose(yyin);
+				
 			}
 			break;
 		default: printf("ERROR: Demasiados argumentos.\nSintaxis: %s [fichero_entrada]\n\n", argv[0]);
 	}
 	return 0;
 }
-void yyerror (char const *message) { fprintf (stderr, "%s\n", message);}
+void yyerror (char const *message) { /*fprintf (stderr, "%s\n", message); printf("%d\n",yylineno);*/}
 
 struct alumno crearAlumno(int linea,char *nif, char *nombre, float nota) {
 	struct alumno a;

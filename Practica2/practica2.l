@@ -12,14 +12,14 @@ nif [0-9]{8}"-"[A-Z]{1}
 numeroSuelto [0-9]+
 %%
 {nota} {yylval.valFloat = atof(yytext); return NOTA;}
-Curso{ws}{data}{ws} {yylval.valStr = yytext; return CURSO;}
+{data} {yylval.valStr = yytext; return CURSO;}
 {nif} {yylval.valStr = strdup(yytext); return NIF;}
 {word}+ {}
 {word}+/"-" {yylval.valStr = strdup(yytext); return ASIGNATURA;}
 {word}+","{ws}{word}+ {yylval.valStr = strdup(yytext); return NOMBRE_COMPLETO;}
 {numeroSuelto} {}
-{ws} {}
-\n {}
 "-" {}
+\n {}
+{ws} {}
 %%
 

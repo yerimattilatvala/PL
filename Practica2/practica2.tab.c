@@ -415,16 +415,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   11
+#define YYLAST   17
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  9
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  10
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  18
+#define YYNSTATES  19
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -471,7 +471,8 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    45,    45,    47,    49,    54,    55,    57,    72,    77
+       0,    45,    45,    47,    49,    54,    55,    57,    72,    77,
+      82
 };
 #endif
 
@@ -495,12 +496,12 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -6
+#define YYPACT_NINF -1
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-6)))
+  (!!((Yystate) == (-1)))
 
-#define YYTABLE_NINF -1
+#define YYTABLE_NINF -4
 
 #define yytable_value_is_error(Yytable_value) \
   0
@@ -509,8 +510,8 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -4,    -3,     4,    -6,    -5,    -6,    -6,     3,     2,     5,
-      -5,    -6,    -6,     6,     8,    -6,    -6,    -6
+       4,     5,     9,    -1,     1,    -1,    -1,     7,     3,     0,
+      -1,    11,    12,     2,    -1,    -1,    -1,    -1,    -1
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -519,54 +520,56 @@ static const yytype_int8 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     2,     0,     4,     1,     0,     0,     0,
-       3,     6,     9,     0,     0,     5,     7,     8
+       6,     0,     0,     0,     5,     8,     9,    10,     7
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    -6,    -6,    -6,    -2
+      -1,    -1,    -1,    -1,    -1,     8
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,    10,    11
+      -1,     2,     3,     4,     9,    10
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule whose
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_uint8 yytable[] =
+static const yytype_int8 yytable[] =
 {
-       7,     8,     9,     1,     6,     5,    12,    13,    15,    16,
-      14,    17
+      -3,     7,     7,    17,    12,    18,     8,     8,    13,     6,
+       0,     1,    11,     5,    15,    16,     0,    14
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       5,     6,     7,     7,     0,     8,     3,     5,    10,     3,
-       5,     3
+       0,     1,     1,     1,     1,     3,     6,     6,     5,     0,
+      -1,     7,     5,     8,     3,     3,    -1,     9
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     7,    10,    11,    12,     8,     0,     5,     6,     7,
-      13,    14,     3,     5,     5,    14,     3,     3
+       0,     7,    10,    11,    12,     8,     0,     1,     6,    13,
+      14,     5,     1,     5,    14,     3,     3,     1,     3
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     9,    10,    11,    12,    13,    13,    14,    14,    14
+       0,     9,    10,    11,    12,    13,    13,    14,    14,    14,
+      14
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2,     2,     2,     1,     3,     3,     2
+       0,     2,     1,     2,     2,     2,     1,     3,     3,     3,
+       3
 };
 
 
@@ -1245,16 +1248,16 @@ yyreduce:
         case 2:
 #line 45 "practica2.y" /* yacc.c:1646  */
     {printList(aprobados,suspensos,errores);}
-#line 1249 "practica2.tab.c" /* yacc.c:1646  */
+#line 1252 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
 #line 49 "practica2.y" /* yacc.c:1646  */
     {
 							printf("- Asignatura : %s\n",(yyvsp[-1].valStr));
-							printf("- %s \n",(yyvsp[0].valStr));
+							printf("- Curso %s \n",(yyvsp[0].valStr));
 							}
-#line 1258 "practica2.tab.c" /* yacc.c:1646  */
+#line 1261 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
@@ -1274,7 +1277,7 @@ yyreduce:
 					posError++;
 				}
 				}
-#line 1278 "practica2.tab.c" /* yacc.c:1646  */
+#line 1281 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
@@ -1284,21 +1287,31 @@ yyreduce:
 			insertarError(e,errores,posError);
 			posError++;
 		}
-#line 1288 "practica2.tab.c" /* yacc.c:1646  */
+#line 1291 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
 #line 77 "practica2.y" /* yacc.c:1646  */
     {
-			struct error e = crearError(yylineno,"NIF Incorrecto");
+			struct error e = crearError(yylineno,"Nombre Incorrecto");
 			insertarError(e,errores,posError);
 			posError++;
 		}
-#line 1298 "practica2.tab.c" /* yacc.c:1646  */
+#line 1301 "practica2.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 82 "practica2.y" /* yacc.c:1646  */
+    {
+			struct error e = crearError(yylineno,"Nota Incorrecta");
+			insertarError(e,errores,posError);
+			posError++;
+		}
+#line 1311 "practica2.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1302 "practica2.tab.c" /* yacc.c:1646  */
+#line 1315 "practica2.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1526,7 +1539,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 83 "practica2.y" /* yacc.c:1906  */
+#line 89 "practica2.y" /* yacc.c:1906  */
 
 int main(int argc, char *argv[]) {
 extern FILE *yyin;
@@ -1542,13 +1555,14 @@ extern FILE *yyin;
 			else {
 				yyparse();
 				fclose(yyin);
+				
 			}
 			break;
 		default: printf("ERROR: Demasiados argumentos.\nSintaxis: %s [fichero_entrada]\n\n", argv[0]);
 	}
 	return 0;
 }
-void yyerror (char const *message) { fprintf (stderr, "%s\n", message);}
+void yyerror (char const *message) { /*fprintf (stderr, "%s\n", message); printf("%d\n",yylineno);*/}
 
 struct alumno crearAlumno(int linea,char *nif, char *nombre, float nota) {
 	struct alumno a;
