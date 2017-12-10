@@ -62,39 +62,41 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "practica2.y" /* yacc.c:339  */
+#line 1 "p2.y" /* yacc.c:339  */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
-#include <ctype.h>
-void yyerror (char const *);
-int yylex();
-int yylineno;
-struct alumno
-{
-	int lineaAlumno;
-	char *nif;
-	char *nombre;
-	float nota;
-};
-int posAprobado = 0;
-int posSuspenso = 0;
-struct alumno aprobados[128];
-struct alumno suspensos[128];
-struct alumno crearAlumno(int linea, char *nif, char *nombre, float nota);
-void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion);
-struct error{
-	int lineaError;
-	char *error;
-};
-int posError = 0;
-struct error errores[128];
-struct error crearError(int linea,char*error);
-void insertarError(struct error e,struct error *listaError,int posicion);
-//función para imprimir listas
-void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, struct error *errores);
 
-#line 98 "practica2.tab.c" /* yacc.c:339  */
+int yylineno;
+int a=0;
+int s=0;
+int n=0;
+char* asignatura;
+char* curso;
+
+typedef struct {
+		int linea;
+		char* nif;
+		char* nombre;
+		float nota;
+		}alum;
+
+struct err {
+	int linea;
+	char* err;
+	};
+
+
+alum aprobados[100];
+alum suspensos[100];
+struct err errores[100];
+
+
+void yyerror (char const *);
+void addAlumno (bool ,int ,char* , char* , double);
+
+#line 100 "p2.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -113,9 +115,9 @@ void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, str
 #endif
 
 /* In a future release of Bison, this section will be replaced
-   by #include "practica2.tab.h".  */
-#ifndef YY_YY_PRACTICA2_TAB_H_INCLUDED
-# define YY_YY_PRACTICA2_TAB_H_INCLUDED
+   by #include "p2.tab.h".  */
+#ifndef YY_YY_P2_TAB_H_INCLUDED
+# define YY_YY_P2_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -129,38 +131,35 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NOTA = 258,
-    LINEA = 259,
-    FIN = 260,
-    fichero_entrada = 261,
-    NOMBRE_COMPLETO = 262,
-    NIF = 263,
-    ASIGNATURA = 264,
-    CURSO = 265
+    NIF = 258,
+    ASIGNATURA = 259,
+    CURSO = 260,
+    NOMBRE = 261,
+    NOTA = 262,
+    NEWLINE = 263,
+    endfile = 264
   };
 #endif
 /* Tokens.  */
-#define NOTA 258
-#define LINEA 259
-#define FIN 260
-#define fichero_entrada 261
-#define NOMBRE_COMPLETO 262
-#define NIF 263
-#define ASIGNATURA 264
-#define CURSO 265
+#define NIF 258
+#define ASIGNATURA 259
+#define CURSO 260
+#define NOMBRE 261
+#define NOTA 262
+#define NEWLINE 263
+#define endfile 264
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 32 "practica2.y" /* yacc.c:355  */
+#line 35 "p2.y" /* yacc.c:355  */
 
-    float valFloat;
-    int valInt;
-    char * valStr;
+	float valFloat;
+	char* valString;	
 
-#line 164 "practica2.tab.c" /* yacc.c:355  */
+#line 163 "p2.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -173,11 +172,11 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_PRACTICA2_TAB_H_INCLUDED  */
+#endif /* !YY_YY_P2_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 181 "practica2.tab.c" /* yacc.c:358  */
+#line 180 "p2.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -417,23 +416,23 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   39
+#define YYLAST   41
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  11
+#define YYNTOKENS  10
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  8
+#define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  17
+#define YYNRULES  18
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  34
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   265
+#define YYMAXUTOK   264
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -468,15 +467,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10
+       5,     6,     7,     8,     9
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    48,    50,    56,    57,    59,    74,    79,
-      83,    88,    93,    98,   106,   107,   109,   110
+       0,    55,    55,    60,    63,    64,    67,    78,    81,    84,
+      87,    90,    93,    96,   102,   103,   106,   107,   108
 };
 #endif
 
@@ -485,10 +484,9 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "NOTA", "LINEA", "FIN",
-  "fichero_entrada", "NOMBRE_COMPLETO", "NIF", "ASIGNATURA", "CURSO",
-  "$accept", "S", "fichero", "cabecera", "lista_alumnos", "alumno",
-  "errors", "end", YY_NULLPTR
+  "$end", "error", "$undefined", "NIF", "ASIGNATURA", "CURSO", "NOMBRE",
+  "NOTA", "NEWLINE", "endfile", "$accept", "S", "list", "lista_alumnos",
+  "alumno", "errors", "end", YY_NULLPTR
 };
 #endif
 
@@ -497,8 +495,7 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264
 };
 # endif
 
@@ -516,9 +513,9 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -7,    29,    37,    31,    16,    34,   -15,   -15,   -15,   -15,
-      22,    21,    11,   -15,    27,   -15,   -15,     2,    28,   -15,
-      31,    17,    31,    31,    31,   -15,   -15,    31,    31,   -15,
+      -2,    36,     5,    26,   -15,    21,     9,     0,   -15,    32,
+     -15,    22,   -15,    18,    29,   -15,    20,    31,    31,   -15,
+     -15,    31,    31,    31,   -15,    31,    31,   -15,   -15,   -15,
      -15,   -15,   -15,   -15
 };
 
@@ -527,22 +524,22 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     1,    16,    17,     2,
-       0,     0,     0,     6,     0,     4,    15,     0,     0,     5,
-       0,     0,     0,     0,     0,    12,    11,     0,     0,     7,
-       8,     9,    10,    13
+       0,     0,     0,     0,     1,     0,     0,     0,     2,     0,
+       5,     0,    15,     0,     0,     4,     0,     0,    16,    18,
+      13,     0,     0,     0,    11,     0,     0,    10,    17,     6,
+       7,     8,     9,    12
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -15,   -15,   -15,   -15,   -15,     9,   -10,   -14
+     -15,   -15,   -15,   -15,    17,     7,   -14
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,    12,    13,    14,     9
+      -1,     2,     8,     9,    10,    11,    20
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -550,42 +547,44 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      16,    18,     1,    10,    25,    22,    26,    23,    29,    30,
-      31,    28,    10,    32,    33,    -3,    -3,    10,    10,    11,
-      27,    19,    10,    10,    11,   -14,   -14,   -14,    17,   -14,
-      20,    24,     7,     8,    21,     7,     8,     6,    15,     5
+      24,     6,     1,    27,    28,     4,    13,    29,    30,    31,
+       6,    32,    33,    12,    14,   -14,   -14,   -14,   -14,     6,
+      22,     6,     6,    26,     7,    21,    15,    25,    16,    17,
+      18,    19,    -3,     6,     5,     7,    23,    18,    19,    18,
+      19,     3
 };
 
 static const yytype_uint8 yycheck[] =
 {
-      10,    11,     9,     1,    18,     3,    20,    17,    22,    23,
-      24,    21,     1,    27,    28,     4,     5,     1,     1,     8,
-       3,    12,     1,     1,     8,     3,     4,     5,     7,     7,
-       3,     3,     4,     5,     7,     4,     5,     0,     4,    10
+      14,     1,     4,    17,    18,     0,     6,    21,    22,    23,
+       1,    25,    26,     6,     7,     6,     7,     8,     9,     1,
+      13,     1,     1,    16,     3,     7,     9,     7,     6,     7,
+       8,     9,     0,     1,     8,     3,     7,     8,     9,     8,
+       9,     5
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     9,    12,    13,    14,    10,     0,     4,     5,    18,
-       1,     8,    15,    16,    17,     4,    17,     7,    17,    16,
-       3,     7,     3,    17,     3,    18,    18,     3,    17,    18,
-      18,    18,    18,    18
+       0,     4,    11,     5,     0,     8,     1,     3,    12,    13,
+      14,    15,    15,     6,    15,    14,     6,     7,     8,     9,
+      16,     7,    15,     7,    16,     7,    15,    16,    16,    16,
+      16,    16,    16,    16
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    11,    12,    13,    14,    15,    15,    16,    16,    16,
-      16,    16,    16,    16,    17,    17,    18,    18
+       0,    10,    11,    12,    13,    13,    14,    14,    14,    14,
+      14,    14,    14,    14,    15,    15,    16,    16,    16
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     2,     2,     3,     2,     1,     4,     4,     4,
-       4,     3,     3,     4,     1,     2,     1,     1
+       0,     2,     4,     1,     2,     1,     4,     4,     4,     4,
+       3,     3,     4,     2,     1,     2,     1,     2,     1
 };
 
 
@@ -1262,113 +1261,100 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 46 "practica2.y" /* yacc.c:1646  */
-    {printList(aprobados,suspensos,errores);}
-#line 1268 "practica2.tab.c" /* yacc.c:1646  */
+#line 55 "p2.y" /* yacc.c:1646  */
+    {
+	asignatura=(yyvsp[-3].valString);
+	curso=(yyvsp[-2].valString);
+}
+#line 1270 "p2.tab.c" /* yacc.c:1646  */
     break;
 
-  case 4:
-#line 50 "practica2.y" /* yacc.c:1646  */
-    {
-							printf("- Asignatura : %s\n",(yyvsp[-2].valStr));
-							printf("- Curso : %s \n",(yyvsp[-1].valStr));
-							}
-#line 1277 "practica2.tab.c" /* yacc.c:1646  */
+  case 3:
+#line 60 "p2.y" /* yacc.c:1646  */
+    {}
+#line 1276 "p2.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 5:
+#line 64 "p2.y" /* yacc.c:1646  */
+    {}
+#line 1282 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 57 "practica2.y" /* yacc.c:1646  */
-    {}
-#line 1283 "practica2.tab.c" /* yacc.c:1646  */
+#line 67 "p2.y" /* yacc.c:1646  */
+    {
+			if(((yyvsp[-1].valFloat)>=0.00) && ((yyvsp[-1].valFloat)<=10.0)){	
+				if((yyvsp[-1].valFloat)>=5.0){
+					addAlumno(true,yylineno-1,(yyvsp[-3].valString),(yyvsp[-2].valString),(yyvsp[-1].valFloat));
+				}else{
+					addAlumno(false,yylineno-1,(yyvsp[-3].valString),(yyvsp[-2].valString),(yyvsp[-1].valFloat));
+				}
+			}else { errores[n].linea=yylineno-1;
+					yyerror("NOTA incorrecta");
+					n=n+1;}
+		}
+#line 1298 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 59 "practica2.y" /* yacc.c:1646  */
-    {
-			struct alumno alumno = crearAlumno(yylineno-1,(yyvsp[-3].valStr),(yyvsp[-2].valStr),(yyvsp[-1].valFloat));
-			if ((yyvsp[-1].valFloat) >= 5 && (yyvsp[-1].valFloat) <= 10) {
-				insertarAlumno(alumno,aprobados,posAprobado);
-				posAprobado++;
-			}else if ((yyvsp[-1].valFloat) >= 0 && (yyvsp[-1].valFloat) < 5){
-				insertarAlumno(alumno,suspensos,posSuspenso);
-				posSuspenso++;
-				
-			} else{
-				struct error e = crearError(yylineno-1,"Nota Incorrecta");
-				insertarError(e,errores,posError);
-				posError++;
-			}
-		}
-#line 1303 "practica2.tab.c" /* yacc.c:1646  */
+#line 78 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("NOTA incorrecta");
+						n=n+1;}
+#line 1306 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 74 "practica2.y" /* yacc.c:1646  */
-    {
-			struct error e = crearError(yylineno-1,"Nota Incorrecta");
-			insertarError(e,errores,posError);
-			posError++;
-		}
-#line 1313 "practica2.tab.c" /* yacc.c:1646  */
+#line 81 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("NOMBRE incorrecto");
+						n=n+1;}
+#line 1314 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 79 "practica2.y" /* yacc.c:1646  */
-    {
-			struct error e = crearError(yylineno-1,"Nombre Incorrecto");
-			insertarError(e,errores,posError);
-			posError++;}
-#line 1322 "practica2.tab.c" /* yacc.c:1646  */
+#line 84 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("NIF incorrecto");
+						n=n+1;}
+#line 1322 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 83 "practica2.y" /* yacc.c:1646  */
-    {
-			struct error e = crearError(yylineno-1,"NIF Incorrecto");
-			insertarError(e,errores,posError);
-			posError++;
-		}
-#line 1332 "practica2.tab.c" /* yacc.c:1646  */
+#line 87 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("NIF y NOMBRE incorrectos");
+						n=n+1;}
+#line 1330 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 88 "practica2.y" /* yacc.c:1646  */
-    {
-			struct error e = crearError(yylineno-1,"NIF y Nombre incorrectos");
-			insertarError(e,errores,posError);
-			posError++;
-		}
-#line 1342 "practica2.tab.c" /* yacc.c:1646  */
+#line 90 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("NOMBRE y NOTA incorrectos");
+						n=n+1;}
+#line 1338 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 93 "practica2.y" /* yacc.c:1646  */
-    {
-			struct error e = crearError(yylineno-1,"Nombre y Nota incorrectos");
-			insertarError(e,errores,posError);
-			posError++;				
-			}
-#line 1352 "practica2.tab.c" /* yacc.c:1646  */
+#line 93 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("NIF y NOTA incorrectos");
+						n=n+1;}
+#line 1346 "p2.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 98 "practica2.y" /* yacc.c:1646  */
-    {
-			struct error e = crearError(yylineno-1,"NIF y Nota incorrectos");
-			insertarError(e,errores,posError);
-			posError++;
-		}
-#line 1362 "practica2.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 17:
-#line 110 "practica2.y" /* yacc.c:1646  */
-    {yylineno = yylineno+1;}
-#line 1368 "practica2.tab.c" /* yacc.c:1646  */
+#line 96 "p2.y" /* yacc.c:1646  */
+    {errores[n].linea=yylineno-1;
+						yyerror("TODO MAL");
+						n=n+1;}
+#line 1354 "p2.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1372 "practica2.tab.c" /* yacc.c:1646  */
+#line 1358 "p2.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1596,67 +1582,52 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 113 "practica2.y" /* yacc.c:1906  */
+#line 110 "p2.y" /* yacc.c:1906  */
 
-int main(int argc, char *argv[]) {
-extern FILE *yyin;
 
-	switch (argc) {
-		case 1:	yyin=stdin;
-			yyparse();
-			break;
-		case 2: yyin = fopen(argv[1], "r");
-			if (yyin == NULL) {
-				printf("ERROR: No se ha podido abrir el fichero.\n");
-			}
-			else {
-				yyparse();
-				fclose(yyin);
-				
-			}
-			break;
-		default: printf("ERROR: Demasiados argumentos.\nSintaxis: %s [fichero_entrada]\n\n", argv[0]);
+void yyerror(char const *s){
+	errores[n].err=strdup(s);
+}
+
+void addAlumno(bool aprobado,int linea,char* nif, char* nombre, double nota){
+	if (aprobado){
+		aprobados[a].linea=linea;
+		aprobados[a].nif=nif;
+		aprobados[a].nombre=nombre;
+		aprobados[a].nota=nota;
+		a=a+1;
 	}
+	else{
+		suspensos[s].linea=linea;
+		suspensos[s].nif=nif;
+		suspensos[s].nombre=nombre;
+		suspensos[s].nota=nota;
+		s=s+1;
+	}
+}
+int i;
+void printArrays(){
+	printf("+ Alumnos aprobados:\n");
+	for (i=0;i<a;i++){
+		printf("Linea %i: %s;%s;%2.2f\n",aprobados[i].linea,aprobados[i].nif,aprobados[i].nombre,aprobados[i].nota);
+	}
+	printf("+ Alumnos suspensos:\n");
+	for (i=0;i<s;i++){
+		printf("Linea %i: %s;%s\n",suspensos[i].linea,suspensos[i].nif,suspensos[i].nombre);
+	}
+	printf("+ Errores:\n");
+	for (i=0;i<n;i++){
+		printf("Linea %i: %s\n",errores[i].linea,errores[i].err);
+	}
+}
+
+
+int main() {
+	yyparse();
+	printf("- Asignatura: %s\n",asignatura);
+	printf("- Curso: %s\n",curso);
+	printArrays();
 	return 0;
 }
-void yyerror (char const *message) { /*fprintf (stderr, "%s\n", message); printf("%d\n",yylineno);*/}
 
-struct alumno crearAlumno(int linea,char *nif, char *nombre, float nota) {
-	struct alumno a;
-	a.lineaAlumno = linea;
-	a.nif = nif;
-	a.nombre = nombre;
-	a.nota = nota;
-	return a;
-}
 
-void insertarAlumno(struct alumno alumno, struct alumno *lista, int posicion) {
-	lista[posicion] = alumno;
-}
-
-void insertarError(struct error e,struct error *listaError,int posicion) {
-	listaError[posicion] = e;
-}
-
-void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, struct error *errores) {
-	int i = 0;
-	printf("+ Alumnos aprobados: \n");
-	for(i = 0; i < posAprobado; i++){
-		printf("Linea %d: %s; %s; %.2f\n",listaAprobados[i].lineaAlumno,listaAprobados[i].nif,listaAprobados[i].nombre,listaAprobados[i].nota);
-	}
-	printf("+ Alumnos suspensos: \n");
-	for(i = 0; i < posSuspenso; i++){
-		printf("Linea %d: %s; %s; %.2f\n",listaSuspensos[i].lineaAlumno,listaSuspensos[i].nif,listaSuspensos[i].nombre,listaSuspensos[i].nota);
-	}
-	printf("+ Errores: \n");
-	for(i = 0; i < posError; i++){
-		printf("Linea %d: %s\n",errores[i].lineaError,errores[i].error);
-	}
-}
-
-struct error crearError(int linea,char*error) {
-	struct error e;
-	e.lineaError = linea;
-	e.error = error;
-	return e;
-}

@@ -1,0 +1,22 @@
+***** Practica del bloque 1
+***** Autor: Yeray Méndez Romero
+***** Login: yeray.mendez
+
+-Desarrollo:
+    Esta práctica se ha desarrollado utilizando el lenguaje FLEX y C y utilizando el compilador GCC sobre la plataforma Linux.
+
+-Funcionamiento:
+    El objetivo de esta practica es que dado un fichero de texto como entrada muestre el número total de
+    caracteres que lo componen, el número total de palabras, el número de palabras en mayúscula, el número de
+    palabras en minúscula y el número de frases. 
+    Junto con los archivos requeridos se ha añadido el fichero Makefile que posee las siguiente opciones:
+        -Compile: para compilar el fichero "p1.l" y obtener un archivo binario que se puede ejecutar de forma 
+                  iterativa en la terminal. 
+        -Run: esta opción realiza la misma función que la opción compile, pero en este caso, al fichero
+              binario se le pasa un fichero con extensión "txt" para que sea procesado.
+
+-Peculiaridades:
+    En cuanto a las peculiaridades, podemos mencionar que el programa solo considera palabas minúsculas y mayúsculas
+    aquellas en las que cada una de sus letras son minúsculas o mayúsculas respectivamente, si no se cumple dicha condición
+    será considerada un palabra estándar.Otro aspecto que cabe mencionar es que una palabra mayúscula(o minúscula) que vaya entre
+    paréntesis,corchetes o cualquier símbolo se le considerará una palabra estándar.

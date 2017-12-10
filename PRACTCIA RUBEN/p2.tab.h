@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_PRACTICA2_TAB_H_INCLUDED
-# define YY_YY_PRACTICA2_TAB_H_INCLUDED
+#ifndef YY_YY_P2_TAB_H_INCLUDED
+# define YY_YY_P2_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -45,38 +45,35 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NOTA = 258,
-    LINEA = 259,
-    FIN = 260,
-    fichero_entrada = 261,
-    NOMBRE_COMPLETO = 262,
-    NIF = 263,
-    ASIGNATURA = 264,
-    CURSO = 265
+    NIF = 258,
+    ASIGNATURA = 259,
+    CURSO = 260,
+    NOMBRE = 261,
+    NOTA = 262,
+    NEWLINE = 263,
+    endfile = 264
   };
 #endif
 /* Tokens.  */
-#define NOTA 258
-#define LINEA 259
-#define FIN 260
-#define fichero_entrada 261
-#define NOMBRE_COMPLETO 262
-#define NIF 263
-#define ASIGNATURA 264
-#define CURSO 265
+#define NIF 258
+#define ASIGNATURA 259
+#define CURSO 260
+#define NOMBRE 261
+#define NOTA 262
+#define NEWLINE 263
+#define endfile 264
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 32 "practica2.y" /* yacc.c:1909  */
+#line 35 "p2.y" /* yacc.c:1909  */
 
-    float valFloat;
-    int valInt;
-    char * valStr;
+	float valFloat;
+	char* valString;	
 
-#line 80 "practica2.tab.h" /* yacc.c:1909  */
+#line 77 "p2.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -89,4 +86,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_PRACTICA2_TAB_H_INCLUDED  */
+#endif /* !YY_YY_P2_TAB_H_INCLUDED  */

@@ -1,4 +1,4 @@
-FUENTE = practica2
+FUENTE = p2
 PRUEBA = ejemplo.txt
 PRUEBA2 = file.txt
 

@@ -4,7 +4,7 @@
 #include <ctype.h>
 void yyerror (char const *);
 int yylex();
-extern int yylineno;
+int yylineno;
 struct alumno
 {
 	int lineaAlumno;
@@ -35,57 +35,81 @@ void printList (struct alumno *listaAprobados,struct alumno *listaSuspensos, str
     char * valStr;
 }
 %token <valFloat> NOTA
-%token <valInt> LINEA
+%token LINEA FIN
+%token fichero_entrada
 %token <valStr> NOMBRE_COMPLETO NIF
 %token <valStr> ASIGNATURA CURSO
-%type <valStr>  fichero cabecera lista_alumnos alumno 
+%type <valStr>  lista_alumnos
 %error-verbose
 %start S
 %%
-S : fichero {printList(aprobados,suspensos,errores);}
+S : fichero end{printList(aprobados,suspensos,errores);}
 	;
-fichero : cabecera  lista_alumnos
+fichero : cabecera lista_alumnos
 	;
-cabecera : ASIGNATURA CURSO {
+cabecera : ASIGNATURA CURSO LINEA{
 							printf("- Asignatura : %s\n",$1);
-							printf("- Curso %s \n",$2);
-							} 			 
+							printf("- Curso : %s \n",$2);
+							}  
 	;
+
 lista_alumnos : lista_alumnos alumno
-	| alumno
+	| alumno {}
 	;
-alumno : NIF NOMBRE_COMPLETO NOTA{
-				struct alumno alumno = crearAlumno(yylineno,$1,$2,$3);
-				if ($3 >= 5 && $3 <= 10) {
-					insertarAlumno(alumno,aprobados,posAprobado);
-					posAprobado++;
-				}else if ($3 >= 0 && $3 < 5){
-					insertarAlumno(alumno,suspensos,posSuspenso);
-					posSuspenso++;
-					
-				} else{
-					struct error e = crearError(yylineno,"Nota Incorrecta");
-					insertarError(e,errores,posError);
-					posError++;
-				}
-				}
-		| error NOMBRE_COMPLETO NOTA {
-			struct error e = crearError(yylineno,"NIF Incorrecto");
+alumno : NIF NOMBRE_COMPLETO NOTA end{
+			struct alumno alumno = crearAlumno(yylineno-1,$1,$2,$3);
+			if ($3 >= 5 && $3 <= 10) {
+				insertarAlumno(alumno,aprobados,posAprobado);
+				posAprobado++;
+			}else if ($3 >= 0 && $3 < 5){
+				insertarAlumno(alumno,suspensos,posSuspenso);
+				posSuspenso++;
+				
+			} else{
+				struct error e = crearError(yylineno-1,"Nota Incorrecta");
+				insertarError(e,errores,posError);
+				posError++;
+			}
+		}
+		|NIF NOMBRE_COMPLETO errors end {
+			struct error e = crearError(yylineno-1,"Nota Incorrecta");
 			insertarError(e,errores,posError);
 			posError++;
 		}
-		| NIF error NOTA {
-			struct error e = crearError(yylineno,"Nombre Incorrecto");
+		|NIF errors NOTA end {
+			struct error e = crearError(yylineno-1,"Nombre Incorrecto");
+			insertarError(e,errores,posError);
+			posError++;}
+		|errors NOMBRE_COMPLETO NOTA end {
+			struct error e = crearError(yylineno-1,"NIF Incorrecto");
 			insertarError(e,errores,posError);
 			posError++;
 		}
-		| NIF NOMBRE_COMPLETO error {
-			struct error e = crearError(yylineno,"Nota Incorrecta");
+		|errors NOTA end {
+			struct error e = crearError(yylineno-1,"NIF y Nombre incorrectos");
+			insertarError(e,errores,posError);
+			posError++;
+		}
+		|NIF errors end {
+			struct error e = crearError(yylineno-1,"Nombre y Nota incorrectos");
+			insertarError(e,errores,posError);
+			posError++;				
+			}
+		|errors NOMBRE_COMPLETO errors end {
+			struct error e = crearError(yylineno-1,"NIF y Nota incorrectos");
 			insertarError(e,errores,posError);
 			posError++;
 		}
 		
 	;
+
+errors: error
+	|error errors;
+
+end: LINEA
+	| FIN {yylineno = yylineno+1;}
+	;
+
 %%
 int main(int argc, char *argv[]) {
 extern FILE *yyin;

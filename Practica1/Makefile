@@ -1,4 +1,5 @@
 FUENTE = p1
+PRUEBA = prueba.txt
 
 all: compile run
 
@@ -7,4 +8,4 @@ compile:
 	gcc -o $(FUENTE) lex.yy.c -lfl
 
 run:
-	./$(FUENTE) 
+	./$(FUENTE) < $(PRUEBA)
