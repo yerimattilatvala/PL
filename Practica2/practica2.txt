@@ -1,0 +1,36 @@
+***** Practica del bloque 2
+***** Autor: Yeray Méndez Romero
+***** Login: yeray.mendez
+
+-Desarrollo:
+    La práctica se ha desarrollado utilizando las herramientas FLEX y Bison, el lenguaje de programación C y el compilador GCC sobre la plataforma
+    Linux.
+
+-Funcionamiento:
+    El objetivo de esta práctica es un analizador léxico y sintáctico para el tratamiento de un listado de alumnos de una asignatura. 
+    La entrada será un fichero en formato texto similar al siguiente ejemplo:
+
+        Procesamiento de Lenguajes - Curso 2017/2018
+        Identificador		Alumno		   Nota
+        11223344-Z    Alonso Barreiro, Ana Belén   5.68
+
+    El analizador léxico reconocerá los caracteres del texto y enviará los respectivos tokens para que sean analizados en la gramática del analizador
+    sintáctico.
+    La salida se mostrará en terminal :
+
+	- Asignatura : Procesamiento de Lenguajes
+	- Curso : 2017/2018
+	+ Alumnos aprobados:
+	Linea 3: 11223344-Z;  Alonso Barreiro, Ana Belen ; 5.68
+	+ Alumnos suspensos:
+	+ Errores:
+
+    Junto con los archivos requeridos se ha añadido el fichero Makefile que posee las siguiente opciones:
+	-Compile: para compilar los ficheos necesarios y obtener un archivo binario que se puede ejecutar.
+	-Run y Run2 : estas opciones realizan la misma función que la opción compile, pero en este caso, al fichero binario se le pasa un fichero con
+	 extensión "txt" para que sea procesado.
+    Se han adjuntado los ficheros file.txt y ejemplo.txt para probar el programa.
+
+-Peculiaridades:
+    En esta práctica solo se ha realizado manejo de errores(campos ausentes y formato erroneo) sobre el NIF, el nombre completo del alumno y la 
+    nota. Para el campo nota se comprueba que su valor estea comprendido entre 0.00 y 10.00, si esta condición no se cumpliera se genera un error. 
